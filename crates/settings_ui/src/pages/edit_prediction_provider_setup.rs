@@ -455,6 +455,36 @@ fn ollama_settings() -> Box<[SettingsPageItem]> {
             metadata: None,
         }),
         SettingsPageItem::SettingItem(SettingItem {
+            title: "Zeta Format",
+            description: "The Zeta prompt format to use when Prompt Format is set to Zeta2. Leave empty to use the default.",
+            field: Box::new(SettingField {
+                pick: |settings| {
+                    settings
+                        .project
+                        .all_languages
+                        .edit_predictions
+                        .as_ref()?
+                        .ollama
+                        .as_ref()?
+                        .zeta_format
+                        .as_ref()
+                },
+                write: |settings, value, _app: &App| {
+                    settings
+                        .project
+                        .all_languages
+                        .edit_predictions
+                        .get_or_insert_default()
+                        .ollama
+                        .get_or_insert_default()
+                        .zeta_format = value;
+                },
+                json_path: Some("edit_predictions.ollama.zeta_format"),
+            }),
+            files: USER,
+            metadata: None,
+        }),
+        SettingsPageItem::SettingItem(SettingItem {
             title: "Max Output Tokens",
             description: "The maximum number of tokens to generate.",
             field: Box::new(SettingField {
@@ -581,6 +611,36 @@ fn open_ai_compatible_settings() -> Box<[SettingsPageItem]> {
                         .prompt_format = value;
                 },
                 json_path: Some("edit_predictions.open_ai_compatible_api.prompt_format"),
+            }),
+            files: USER,
+            metadata: None,
+        }),
+        SettingsPageItem::SettingItem(SettingItem {
+            title: "Zeta Format",
+            description: "The Zeta prompt format to use when Prompt Format is set to Zeta2. Leave empty to use the default.",
+            field: Box::new(SettingField {
+                pick: |settings| {
+                    settings
+                        .project
+                        .all_languages
+                        .edit_predictions
+                        .as_ref()?
+                        .open_ai_compatible_api
+                        .as_ref()?
+                        .zeta_format
+                        .as_ref()
+                },
+                write: |settings, value, _app: &App| {
+                    settings
+                        .project
+                        .all_languages
+                        .edit_predictions
+                        .get_or_insert_default()
+                        .open_ai_compatible_api
+                        .get_or_insert_default()
+                        .zeta_format = value;
+                },
+                json_path: Some("edit_predictions.open_ai_compatible_api.zeta_format"),
             }),
             files: USER,
             metadata: None,

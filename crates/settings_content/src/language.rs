@@ -160,6 +160,10 @@ pub struct CustomEditPredictionProviderSettingsContent {
     ///
     /// Default: ""
     pub prompt_format: Option<EditPredictionPromptFormat>,
+    /// The Zeta prompt format to use when `prompt_format` is set to `zeta2`.
+    ///
+    /// Default: "default"
+    pub zeta_format: Option<EditPredictionZetaFormat>,
     /// The name of the model.
     ///
     /// Default: ""
@@ -197,6 +201,43 @@ pub enum EditPredictionPromptFormat {
     CodeGemma,
     Codestral,
     Glm,
+}
+
+#[derive(
+    Copy,
+    Clone,
+    Debug,
+    Default,
+    PartialEq,
+    Eq,
+    Serialize,
+    Deserialize,
+    JsonSchema,
+    MergeFrom,
+    strum::VariantArray,
+    strum::VariantNames,
+)]
+#[serde(rename_all = "snake_case")]
+pub enum EditPredictionZetaFormat {
+    #[default]
+    Default,
+    V0112MiddleAtEnd,
+    V0113Ordered,
+    V0114180EditableRegion,
+    V0120GitMergeMarkers,
+    V0131GitMergeMarkersPrefix,
+    V0211Prefill,
+    V0211SeedCoder,
+    V0331SeedCoderModelPy,
+    V0226Hashline,
+    V0304VariableEdit,
+    V0304SeedNoEdits,
+    V0306SeedMultiRegions,
+    V0316SeedMultiRegions,
+    V0317SeedMultiRegions,
+    V0318SeedMultiRegions,
+    V0327SingleFile,
+    V0420Diagnostics,
 }
 
 #[with_fallible_options]
@@ -281,6 +322,10 @@ pub struct OllamaEditPredictionSettingsContent {
     ///
     /// Default: ""
     pub prompt_format: Option<EditPredictionPromptFormat>,
+    /// The Zeta prompt format to use when `prompt_format` is set to `zeta2`.
+    ///
+    /// Default: "default"
+    pub zeta_format: Option<EditPredictionZetaFormat>,
 }
 
 /// Controls whether Zed collects training data when using Zed's Edit Predictions.

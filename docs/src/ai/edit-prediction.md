@@ -318,6 +318,23 @@ The `prompt_format` setting controls how code context is formatted for the model
 - `glm` - GLM-4 format with code markers
 - `infer` - Auto-detect from model name (default)
 
+When using `prompt_format: "zeta2"` with a self-hosted Zeta model, you can set `zeta_format` to a specific Zeta prompt format:
+
+```json [settings]
+{
+  "edit_predictions": {
+    "provider": "open_ai_compatible_api",
+    "open_ai_compatible_api": {
+      "api_url": "http://localhost:8080/v1/completions",
+      "model": "zed-industries_zeta-2-Q6_K_L.gguf",
+      "prompt_format": "zeta2",
+      "zeta_format": "v0211_seed_coder",
+      "max_output_tokens": 64
+    }
+  }
+}
+```
+
 Your server must implement the OpenAI `/v1/completions` endpoint. Edit predictions will send POST requests with this format:
 
 ```json

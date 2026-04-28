@@ -538,6 +538,8 @@ pub struct OpenAiCompatibleEditPredictionSettings {
     /// The prompt format to use for completions. When `None`, the format
     /// will be derived from the model name at request time.
     pub prompt_format: EditPredictionPromptFormat,
+    /// The Zeta prompt format to use when `prompt_format` is `zeta2`.
+    pub zeta_format: settings::EditPredictionZetaFormat,
 }
 
 impl AllLanguageSettings {
@@ -817,6 +819,7 @@ impl settings::Settings for AllLanguageSettings {
                 max_output_tokens: ollama.max_output_tokens.unwrap(),
                 api_url: ollama.api_url.unwrap().into(),
                 prompt_format: ollama.prompt_format.unwrap(),
+                zeta_format: ollama.zeta_format.unwrap(),
             });
         let openai_compatible_settings = edit_predictions.open_ai_compatible_api.unwrap();
         let openai_compatible_settings = openai_compatible_settings
@@ -832,6 +835,7 @@ impl settings::Settings for AllLanguageSettings {
                 max_output_tokens: openai_compatible_settings.max_output_tokens.unwrap(),
                 api_url: api_url.into(),
                 prompt_format: openai_compatible_settings.prompt_format.unwrap(),
+                zeta_format: openai_compatible_settings.zeta_format.unwrap(),
             });
 
         let mut file_types: FxHashMap<Arc<str>, (GlobSet, Vec<String>)> = FxHashMap::default();

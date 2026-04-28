@@ -1687,12 +1687,14 @@
       "api_url": "http://localhost:11434",
       "model": "qwen2.5-coder:7b-base",
       "prompt_format": "infer",
+      "zeta_format": "default",
       "max_output_tokens": 64,
     },
     "open_ai_compatible_api": {
       "api_url": "",
       "model": "",
       "prompt_format": "infer",
+      "zeta_format": "default",
       "max_output_tokens": 64,
     },
     // Controls whether Zed may collect training data when using Zed's Edit Predictions.

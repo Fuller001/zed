@@ -17,6 +17,7 @@ use language::{
 };
 use release_channel::AppVersion;
 use settings::EditPredictionPromptFormat;
+use settings::EditPredictionZetaFormat;
 use text::{Anchor, Bias, Point};
 use ui::SharedString;
 use workspace::notifications::{ErrorMessagePrompt, NotificationId, show_app_notification};
@@ -32,6 +33,31 @@ use zeta_prompt::{
 use crate::open_ai_compatible::{
     load_open_ai_compatible_api_key_if_needed, send_custom_server_request,
 };
+
+fn zeta_format_from_settings(format: EditPredictionZetaFormat) -> Option<ZetaFormat> {
+    Some(match format {
+        EditPredictionZetaFormat::Default => return None,
+        EditPredictionZetaFormat::V0112MiddleAtEnd => ZetaFormat::V0112MiddleAtEnd,
+        EditPredictionZetaFormat::V0113Ordered => ZetaFormat::V0113Ordered,
+        EditPredictionZetaFormat::V0114180EditableRegion => ZetaFormat::V0114180EditableRegion,
+        EditPredictionZetaFormat::V0120GitMergeMarkers => ZetaFormat::V0120GitMergeMarkers,
+        EditPredictionZetaFormat::V0131GitMergeMarkersPrefix => {
+            ZetaFormat::V0131GitMergeMarkersPrefix
+        }
+        EditPredictionZetaFormat::V0211Prefill => ZetaFormat::V0211Prefill,
+        EditPredictionZetaFormat::V0211SeedCoder => ZetaFormat::V0211SeedCoder,
+        EditPredictionZetaFormat::V0331SeedCoderModelPy => ZetaFormat::V0331SeedCoderModelPy,
+        EditPredictionZetaFormat::V0226Hashline => ZetaFormat::v0226Hashline,
+        EditPredictionZetaFormat::V0304VariableEdit => ZetaFormat::V0304VariableEdit,
+        EditPredictionZetaFormat::V0304SeedNoEdits => ZetaFormat::V0304SeedNoEdits,
+        EditPredictionZetaFormat::V0306SeedMultiRegions => ZetaFormat::V0306SeedMultiRegions,
+        EditPredictionZetaFormat::V0316SeedMultiRegions => ZetaFormat::V0316SeedMultiRegions,
+        EditPredictionZetaFormat::V0317SeedMultiRegions => ZetaFormat::V0317SeedMultiRegions,
+        EditPredictionZetaFormat::V0318SeedMultiRegions => ZetaFormat::V0318SeedMultiRegions,
+        EditPredictionZetaFormat::V0327SingleFile => ZetaFormat::V0327SingleFile,
+        EditPredictionZetaFormat::V0420Diagnostics => ZetaFormat::V0420Diagnostics,
+    })
+}
 
 pub fn request_prediction_with_zeta(
     store: &mut EditPredictionStore,
@@ -102,10 +128,16 @@ pub fn request_prediction_with_zeta(
 
     let request_task = cx.background_spawn({
         async move {
+            let custom_zeta_format = custom_server_settings
+                .as_ref()
+                .filter(|settings| settings.prompt_format == EditPredictionPromptFormat::Zeta2)
+                .and_then(|settings| zeta_format_from_settings(settings.zeta_format));
+
             let zeta_version = raw_config
                 .as_ref()
                 .map(|config| config.format)
-                .unwrap_or(ZetaFormat::default());
+                .or(custom_zeta_format)
+                .unwrap_or_default();
 
             let cursor_offset = position.to_offset(&snapshot);
             let (full_context_offset_range, prompt_input) = zeta2_prompt_input(
